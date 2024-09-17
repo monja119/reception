@@ -1,0 +1,16 @@
+import React from 'react';
+let gmt = 3
+
+//
+export const format_date = (date) => {
+    const dateObj = new Date(date);
+
+    const year = dateObj.getFullYear();
+    const month = dateObj.getMonth() + 1;
+    const day = dateObj.getDate();
+    const hours = (dateObj.getHours() + gmt).toString().padStart(2, '0');
+    const minutes = dateObj.getMinutes().toString().padStart(2, '0');
+    const seconds = dateObj.getSeconds().toString().padStart(2, '0');
+
+    return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+}

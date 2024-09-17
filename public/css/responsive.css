@@ -1,0 +1,14 @@
+.flex-basis-100{
+    flex-basis: 100%;
+}
+
+
+/* sm screen*/
+@media screen and (max-width: 908px){
+    .flex-sm-basis-100{
+        flex-basis: 100%;
+    }
+}
+
+
+

@@ -1,0 +1,76 @@
+/* root */
+:root{
+    --first-color: rgb(37,40,80);
+    --first-color-light: #4dabf7;
+    --first-color-dark: #0b5b9e;
+    --first-color-accent: #ff8f00;
+    --smooth-color : #2c3e50;
+}
+
+/* animation*/
+@keyframes drift {
+    0% {
+        transform: rotate(0deg);
+    }
+    50% {
+        transform: rotate(5deg);
+    }
+    100% {
+        transform: rotate(0deg);
+    }
+}
+
+.background-primary{
+    background-color: var(--first-color);
+    color: white;
+}
+
+.background-primary-light{
+    background-color: var(--first-color-light);
+    color: var(--first-color);
+}
+
+.background-primary-dark{
+    background-color: var(--first-color-dark);
+    color: white;
+}
+
+.background-primary-accent{
+    background-color: var(--first-color-accent);
+    color: white;
+}
+
+.primary-color{
+    color: var(--first-color);
+}
+
+.primary-color-light{
+    color: var(--first-color-light);
+}
+
+.primary-color-dark{
+    color: var(--first-color-dark);
+}
+
+.primary-color-accent{
+    color: var(--first-color-accent);
+}
+
+.cursor-pointer{
+    cursor: pointer;
+}
+
+.delete_content:hover .delete {
+    transform: scale(1.9);
+}
+
+.logo-login {
+    width: 150px;
+    height: 100px;
+}
+
+.header-row{
+    height: 8vh;
+}
+
+
