@@ -14,3 +14,10 @@ export const format_date = (date) => {
 
     return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
 }
+
+
+export const extract_page = (pagination_url) => {
+    if(!pagination_url) return 1;
+    const url = new URL(pagination_url);
+    return parseInt(url.searchParams.get('page'));
+}

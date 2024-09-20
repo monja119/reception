@@ -1,9 +1,13 @@
-import React from "react";
+import React, {useEffect} from "react";
+import {extract_page} from "./helper.jsx";
+
+
 
 export default function Pagination({
-    page, handlePage, dataLength
+    page, handlePage, dataLength, paginationData
 }){
 
+    const marge = 4;
     const next = (step) => {
         if(dataLength > page + step) {
             handlePage(page + step)
@@ -21,9 +25,7 @@ export default function Pagination({
             <ul className="pagination">
                 <li className="page-item cursor-pointer"
                     onClick={() => {
-                        if(page - 10 > 0) {
-                            handlePage(page - 10)
-                        }
+                        paginationData?.current_page - 10 > 0 ?handlePage(paginationData?.current_page - 10) : (paginationData?.from)
                     }}
                 >
                     <span
@@ -33,29 +35,80 @@ export default function Pagination({
                         <span aria-hidden="true">&laquo;</span>
                     </span>
                 </li>
-                {
-                    page - 1 > 0 && <li className="page-item cursor-pointer" onClick={() => prev(page - 1)}>
-                        <span className={`page-link`}>{page - 1}</span>
-                    </li>
-                }
-                <li className="page-item cursor-pointer" onClick={() => handlePage(page)}>
-                    <span className={`page-link  active`}>{page}</span>
+
+                {/* first page */}
+                <li className="page-item cursor-pointer" onClick={() => handlePage(extract_page(paginationData?.first_page_url))}>
+                    <span className={`page-link ${paginationData.current_page === extract_page(paginationData?.first_page_url) && 'active'}`}>{extract_page(paginationData?.first_page_url)}</span>
                 </li>
+
+                {/* last page */}
+                { paginationData?.current_page > (1 + marge) &&
+                    <li className="page-item cursor-pointer">
+                        <span className={`page-link`}> ... </span>
+                    </li>
+                }
+
+                {/* middle page  */}
                 {
-                    <li className="page-item cursor-pointer" onClick={() => next(page + 1)}>
-                        <span className={`page-link`}>{page + 1}</span>
+                    // prev
+                    Array.from({length : marge}, (_, i) =>
+                    (
+                        paginationData?.current_page - (marge - i) > 1 &&
+                        <li className="page-item cursor-pointer"
+                            key={i}
+                            onClick={() => handlePage(paginationData?.current_page - (marge - i))}
+                        >
+                            <span
+                                className={`page-link ${paginationData.current_page === paginationData?.current_page - (marge - i) && 'active'}`}>
+                                {paginationData?.current_page - (marge - i)}
+                            </span>
+                        </li>
+                    ))
+                }
+
+                {/* current page */}
+                {
+                    paginationData?.current_page !== 1 && paginationData?.current_page !== paginationData?.last_page &&
+                    <li className="page-item cursor-pointer">
+                        <span className={`page-link active`}>{paginationData?.current_page}</span>
                     </li>
                 }
                 {
-                    page === 1 && <li className="page-item cursor-pointer" onClick={() => next(page + 1)}>
-                        <span className={`page-link`}>{page + 2}</span>
+
+                    // next
+                    Array.from({length: marge}, (_, index) =>
+                    (
+                        paginationData?.current_page + (index + 1) <paginationData?.last_page &&
+                        <li className="page-item cursor-pointer"
+                            key={index}
+                            onClick={() => handlePage(paginationData?.current_page + (index + 1))}
+                        >
+                            <span
+                                className={`page-link ${paginationData.current_page === paginationData?.current_page + (index + 1) && 'active'}`}>
+                                {paginationData?.current_page + (index + 1)}
+                            </span>
+                        </li>
+                    ))
+                }
+
+                {/* last page */}
+                { paginationData?.current_page < (paginationData?.last_page - marge) &&
+                    <li className="page-item cursor-pointer">
+                        <span className={`page-link`}> ... </span>
                     </li>
                 }
+
+                {/* last page */}
+                <li className="page-item cursor-pointer"
+                    onClick={() => handlePage(extract_page(paginationData?.last_page_url))}>
+                    <span
+                        className={`page-link ${paginationData.current_page === extract_page(paginationData?.last_page_url) && 'active'}`}>{extract_page(paginationData?.last_page_url)}</span>
+                </li>
+
+
                 <li className="page-item cursor-pointer"
                     onClick={() => {
-                        if(dataLength > page + 1) {
-                            handlePage(page + 10)
-                        }
+                        paginationData?.last_page >= page + 10 ? handlePage((paginationData?.current_page + 10)) : handlePage(paginationData?.last_page)
                     }}
                 >
                     <span className="page-link" aria-label="Next">

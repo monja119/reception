@@ -6,7 +6,7 @@ import { logout } from "../../services/authService";
 import { notifyError } from "../../components/notificationManager.jsx";
 
 export default function Logout () {
-    const userStore = useSelector((state) => state.user.user);
+    const userStore = useSelector((state) => state.reception_user.user);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 

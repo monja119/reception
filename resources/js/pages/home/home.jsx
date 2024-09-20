@@ -18,17 +18,15 @@ export default function Home() {
     const [noResult, setNoResult] = useState(false);
     const [articles, setArticles] = useState([]);
     const [page, setPage] = useState(1);
+    const [initial_date, setInitial_date] = useState('');
+    const [final_date, setFinal_date] = useState('');
 
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    const [paginationData, setPaginationData] = useState([]);
 
     const handlePage = (page) => {
         setPage(page);
     }
 
-    const handleSearch = () => {
-        console.log('searching ...');
-    }
     useEffect(() => {
         if(!userStore) {
             navigate('/login')
@@ -40,15 +38,34 @@ export default function Home() {
     }, [articles]);
 
     useEffect(() => {
-        getArticles()
-            .then((res) => {
-                setArticles(res.data);
+        setLoading(true);
+        // if initial_data not less than final_date
+        if(initial_date && final_date && initial_date > final_date) {
+            notifyError('La date de début doit être inférieure à la date de fin')
+            setLoading(false);
+            return;
+        }
+
+        const data = {
+            page : page,
+            search : search,
+            initial_date : initial_date,
+            final_date : final_date
+        }
+        getArticles(data)
+            .then(async (res) => {
+                await setPaginationData(res.data);
+                await setArticles(res.data.data);
             })
             .catch((error) => {
                 console.error(error);
                 notifyError("Erreur lors du chargement des articles")
             })
-    }, []);
+            .finally(() => {
+                setLoading(false);
+            });
+    }, [page, search, initial_date, final_date]);
+
 
     return (
         <div>
@@ -58,7 +75,10 @@ export default function Home() {
                     search={search}
                     setSearch={setSearch}
                     user={userStore}
-                    handleSearch={handleSearch}
+                    initial_date={initial_date}
+                    setInitial_date={setInitial_date}
+                    final_date={final_date}
+                    setFinal_date={setFinal_date}
                 />
             }
 
@@ -72,7 +92,13 @@ export default function Home() {
 
             { noResult && <NoResult /> }
 
-            <List articles={articles} setArticles={setArticles} page={page} handlePage={handlePage} />
+                <List
+                    articles={articles}
+                    setArticles={setArticles}
+                    page={page}
+                    handlePage={handlePage}
+                    paginationData={paginationData}
+                />
         </div>
     );
 }

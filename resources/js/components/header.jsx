@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import React, {useEffect} from "react";
+import React from "react";
 import talys_image from "../assets/images/talys.png"
 import { FaSearch } from "react-icons/fa";
 
@@ -7,12 +7,12 @@ export default function Header({
     search,
     setSearch,
     user,
-    handleSearch
+    initial_date,
+    setInitial_date,
+    final_date,
+    setFinal_date
 }) {
 
-    useEffect(() => {
-
-    }, []);
 
     let header =
         <>
@@ -44,18 +44,26 @@ export default function Header({
                             type="text"
                             className="form-control"
                             placeholder="Numéro"
-                            style={{width: '500px'}}
+                            style={{width: '250px'}}
                             onChange={(e) => setSearch(e.target.value)}
-                            onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
                             value={search}
                         />
-                        <button
-                            className="btn btn-primary"
-                            style={{height: '39px', width: '75px'}}
-                            onClick={handleSearch}
-                        >
-                            <FaSearch />
-                        </button>
+                        - de -
+                        <input
+                            type="date"
+                            className="form-control"
+                            style={{width: '150px'}}
+                            onChange={(e) => setInitial_date(e.target.value)}
+                            value={initial_date}
+                        />
+                        - à -
+                        <input
+                            type="date"
+                            className="form-control"
+                            style={{width: '150px'}}
+                            onChange={(e) => setFinal_date(e.target.value)}
+                            value={final_date}
+                        />
                     </div>
 
                     <div className="d-none d-lg-flex d-xl-flex justify-content-center align-items-center py-2 gap-1 flex-sm-basis-100 flex-md-basis-100">
