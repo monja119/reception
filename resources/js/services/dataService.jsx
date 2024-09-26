@@ -32,3 +32,7 @@ export const getArticle = (id) => {
 }
 
 
+export const getNumeroDossier  = (like) => {
+    return axios.get(`/api/x3/${like}`);
+}
+

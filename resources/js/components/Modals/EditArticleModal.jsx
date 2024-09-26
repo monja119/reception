@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import { Button, Modal } from 'react-bootstrap';
-import { updateArticle } from "../../services/dataService.jsx";
+import { updateArticle, getNumeroDossier } from "../../services/dataService.jsx";
 import { notifyError, notifySucess} from "../notificationManager.jsx";
 
 const defaultArticle = (article) => {
@@ -21,12 +21,22 @@ const defaultData = {
 
 export default function UpdateUserModal ({ index, article, articles, setArticles, show, handleClose }) {
     const [data, setData] = useState(defaultData);
-
+    const init_numero = article?.numero;
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [numero, setNumero] = useState(init_numero);
+    const [numeroDossier, setNumeroDossier] = useState([]);
+    const [hideList, setHideList] = useState(true);
+    const ulRef = useRef(null);
 
-    const handleChange = (name, value) => {
-        console.log(data)
+    const handleChange = (name, value, source=null) => {
+        if(source && name === 'numero') {
+            setNumero(value);
+            setHideList(true);
+        }
+        else if(!source && name === 'numero') {
+            value === init_numero ? setNumero(init_numero) : setNumero('')
+        }
         setData({ ...data, [name]: value });
     }
 
@@ -38,20 +48,24 @@ export default function UpdateUserModal ({ index, article, articles, setArticles
     const saveArticle = () => {
         setError('');
         setLoading(true);
-        if(data.numero === '' || data.quantity === '' || data.reste === '') {
+
+        if(numero === '')
+        {
+            notifyError('Numéro de dossier non valide');
+            setLoading(false);
+            return;
+        }
+
+
+        if(data.quantity === '' || data.reste === '') {
             setError('Veuillez remplir tous les champs');
             setLoading(false);
             return;
         }
 
-        if(parseInt(data.quantity) < parseInt(data.reste)){
-            notifyError('La quantité ne peut pas être inférieure au reste');
-            setLoading(false);
-            return;
-        }
         const articleData = {
             id: data.id,
-            numero: data.numero,
+            numero: numero,
             quantity: data.quantity,
             reste: data.reste,
         }
@@ -74,12 +88,38 @@ export default function UpdateUserModal ({ index, article, articles, setArticles
             });
     }
 
+    useEffect(() => {
+        data.numero !== '' && getNumeroDossier(data.numero)
+            .then((response)=>{
+                const res = response.data.data;
+                res && setNumeroDossier(res)
+            })
+            .catch((error) => {
+                console.error(error);
+            })
+    }, [data.numero]);
+
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (ulRef.current && !ulRef.current.contains(event.target)) {
+                setHideList(true);
+            }
+        };
+
+        document.addEventListener('click', handleClickOutside);
+
+        return () => {
+            document.removeEventListener('click', handleClickOutside);
+        };
+    }, [setHideList]);
+
 
     return (
         <>
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Nouveau utilisateur</Modal.Title>
+                    <Modal.Title>Modification</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <p className={"text-danger"}>
@@ -87,16 +127,38 @@ export default function UpdateUserModal ({ index, article, articles, setArticles
                     </p>
                     <input
                         type="text"
-                        className="col-4 rounded border border-opacity-50 form-control mt-2"
+                        className={`col-4 rounded border border-opacity-50 form-control mt-2 ${data.numero === '' ? '' : data.numero === init_numero ? 'is-valid' :  numero === '' ? 'is-invalid' : 'is-valid' } `}
                         style={{height: '39px'}}
-                        placeholder="Numéro"
+                        placeholder="N° dossier"
                         value={data?.numero}
-                        onChange={(e) => handleChange('numero', e.target.value)}
+                        onChange={(e) => {
+                            setHideList(false)
+                            handleChange('numero', e.target.value)
+                        }}
                     />
+
+                    <ul
+                        className="list-dossier list-group"
+                        hidden={hideList}
+                        ref={ulRef}
+                    >
+                        {numeroDossier.map((item, index) => {
+                            return (
+                                <li
+                                    key={index}
+                                    className="list-group-item cursor-pointer"
+                                    onClick={() => handleChange('numero', item.SHIPUID_0, 'list')}
+                                >
+                                    {item.SHIPUID_0}
+                                </li>
+                            )
+                        })}
+                    </ul>
+
                     <input
                         type="number"
                         className=" col-3 rounded border border-opacity-50 form-control mt-2"
-                        placeholder="Quantité"
+                        placeholder="Nombre"
                         value={data?.quantity}
                         onChange={(e) => handleChange('quantity', e.target.value)}
                     />

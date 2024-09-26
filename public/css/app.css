@@ -25,6 +25,20 @@
     color: white;
 }
 
+.primary-button {
+    background-color: var(--first-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: .3s;
+}
+.primary-button:hover {
+    background-color: var(--first-color-dark);
+    color : white;
+}
+
 .background-primary-light{
     background-color: var(--first-color-light);
     color: var(--first-color);
@@ -74,3 +88,17 @@
 }
 
 
+.list-dossier{
+    max-height: 50vh;
+    width: 92%;
+    overflow-y: auto;
+    position : absolute;
+    z-index: 999;
+    border : 1px solid var(--first-color);
+    border-radius : 5px;
+}
+
+.list-dossier li:hover{
+    background-color: var(--first-color);
+    color: white;
+}

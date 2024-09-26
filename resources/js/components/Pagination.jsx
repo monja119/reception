@@ -37,7 +37,7 @@ export default function Pagination({
                 </li>
 
                 {/* first page */}
-                <li className="page-item cursor-pointer" onClick={() => handlePage(extract_page(paginationData?.first_page_url))}>
+                <li className="page-item cursor-pointer first-page" onClick={() => handlePage(extract_page(paginationData?.first_page_url))}>
                     <span className={`page-link ${paginationData.current_page === extract_page(paginationData?.first_page_url) && 'active'}`}>{extract_page(paginationData?.first_page_url)}</span>
                 </li>
 
@@ -69,7 +69,7 @@ export default function Pagination({
                 {/* current page */}
                 {
                     paginationData?.current_page !== 1 && paginationData?.current_page !== paginationData?.last_page &&
-                    <li className="page-item cursor-pointer">
+                    <li className="page-item cursor-pointer current-page">
                         <span className={`page-link active`}>{paginationData?.current_page}</span>
                     </li>
                 }
@@ -78,7 +78,7 @@ export default function Pagination({
                     // next
                     Array.from({length: marge}, (_, index) =>
                     (
-                        paginationData?.current_page + (index + 1) <paginationData?.last_page &&
+                        paginationData?.current_page + (index + 1) < paginationData?.last_page &&
                         <li className="page-item cursor-pointer"
                             key={index}
                             onClick={() => handlePage(paginationData?.current_page + (index + 1))}
@@ -99,11 +99,13 @@ export default function Pagination({
                 }
 
                 {/* last page */}
-                <li className="page-item cursor-pointer"
+                {  paginationData?.last_page_url !== paginationData?.first_page_url &&
+                    <li className="page-item cursor-pointer last-page"
                     onClick={() => handlePage(extract_page(paginationData?.last_page_url))}>
-                    <span
-                        className={`page-link ${paginationData.current_page === extract_page(paginationData?.last_page_url) && 'active'}`}>{extract_page(paginationData?.last_page_url)}</span>
-                </li>
+                        <span
+                            className={`page-link ${paginationData.current_page === extract_page(paginationData?.last_page_url) && 'active'}`}>{extract_page(paginationData?.last_page_url)}</span>
+                    </li>
+                }
 
 
                 <li className="page-item cursor-pointer"

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import { login } from '../../services/authService'
 import { notifyError, notifySucess} from "../../components/notificationManager.jsx";
-import talys_image from "../../assets/images/talys.png"
+import sanifer from "../../assets/images/sanifer.png"
 import { useDispatch, useSelector } from 'react-redux';
 import { setUser } from '../../reducers/users/userActions.js';
 import {useNavigate} from "react-router-dom";
@@ -70,17 +70,18 @@ export default function Login ()
 
                                 <div className="login-logo text-center">
                                     <img
-                                        src={talys_image}
+                                        src={sanifer}
                                         alt="logo-talys"
                                         className="logo-login mt-3"
+                                        style={{width: '200px', height: '210px'}}
                                     />
 
-                                    <h6
-                                        style={{marginTop: "-55px"}}
-                                        className="text-center mb-2 mt-3"
+                                    <h4
+                                        style={{marginTop: "-45px"}}
+                                        className="text-center mb-3 "
                                     >
                                         Réception
-                                    </h6>
+                                    </h4>
                                 </div>
                                 <p className="login-box-msg my-3 mb-4 small">Connectez-vous pour commencer votre
                                     session</p>
@@ -127,17 +128,17 @@ export default function Login ()
                             </div>
                         </div>
 
-                        <div className={"mt-3 text-center small"}>
-                            <p>
-                                Talys &copy; {new Date().getFullYear()} | Version {import.meta.env.VITE_APP_VERSION} | <
-                                a
-                                href={`mailto:${import.meta.env.VITE_DEVELOPER_EMAIL}`}
-                                className="text-primary text-decoration-none"
-                                >
-                                    <span className="text-primary"> Contactez-nous</span>
-                                </a>
-                            </p>
-                        </div>
+                        {/*<div className={"mt-3 text-center small"}>*/}
+                        {/*    <p>*/}
+                        {/*        Talys &copy; {new Date().getFullYear()} | Version {import.meta.env.VITE_APP_VERSION} | <*/}
+                        {/*        a*/}
+                        {/*        href={`mailto:${import.meta.env.VITE_DEVELOPER_EMAIL}`}*/}
+                        {/*        className="text-primary text-decoration-none"*/}
+                        {/*        >*/}
+                        {/*            <span className="text-primary"> Contactez-nous</span>*/}
+                        {/*        </a>*/}
+                        {/*    </p>*/}
+                        {/*</div>*/}
                     </div>
                 </div>
             </div>

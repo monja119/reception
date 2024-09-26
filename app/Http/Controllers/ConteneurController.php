@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Article;
+use App\Models\Conteneur;
 use Illuminate\Http\Request;
 
-class ArticleController extends Controller
+class ConteneurController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -35,10 +35,10 @@ class ArticleController extends Controller
             $final_date = request()->get('final_date');
         }
 
-        $articles = Article::
-            when($search, function($query) use ($search) {
-                return $query->where('numero', 'like', '%'.$search.'%');
-            })
+        $articles = Conteneur::
+        when($search, function($query) use ($search) {
+            return $query->where('numero', 'like', '%'.$search.'%');
+        })
             ->when($initial_date, function($query) use ($initial_date) {
                 return $query->whereDate('created_at', '>=', $initial_date);
             })
@@ -63,7 +63,7 @@ class ArticleController extends Controller
             'creator_id' => 'required'
         ]);
 
-        $article = Article::create($validated_data);
+        $article = Conteneur::create($validated_data);
 
         return response()->json(
             [
@@ -77,14 +77,14 @@ class ArticleController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Article $article)
+    public function show(Conteneur $article)
     {
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Article $article)
+    public function update(Request $request, Conteneur $article)
     {
         $validated_data = $request->validate([
             'numero' => 'required',
@@ -107,7 +107,7 @@ class ArticleController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Article $article)
+    public function destroy(Conteneur $article)
     {
         $article->delete();
 
