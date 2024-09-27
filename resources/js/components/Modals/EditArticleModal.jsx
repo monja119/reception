@@ -57,8 +57,8 @@ export default function UpdateUserModal ({ index, article, articles, setArticles
         }
 
 
-        if(data.quantity === '' || data.reste === '') {
-            setError('Veuillez remplir tous les champs');
+        if(data.quantity === '') {
+            setError('Veuillez remplir le champ nombre');
             setLoading(false);
             return;
         }
@@ -67,7 +67,7 @@ export default function UpdateUserModal ({ index, article, articles, setArticles
             id: data.id,
             numero: numero,
             quantity: data.quantity,
-            reste: data.reste,
+            reste: data.reste === '' ? 0 : data.reste,
         }
 
         updateArticle(articleData)

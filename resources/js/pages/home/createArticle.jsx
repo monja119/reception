@@ -53,8 +53,8 @@ export default function CreateArticle ({ user }) {
             return;
         }
 
-        if(article.quantity === '' || article.reste === '') {
-            notifyError('Veuillez remplir tous les champs');
+        if(article.quantity === '') {
+            notifyError('Veuillez remplir le champ nombre');
             setLoading(false);
             return;
         }
@@ -64,10 +64,10 @@ export default function CreateArticle ({ user }) {
             creator_id : article.creator_id,
             numero : numero,
             quantity : article.quantity,
-            reste : article.reste,
+            reste : article.reste === '' ? 0 : article.reste,
         }
 
-        createArticle(article)
+        createArticle(data)
             .then((res) => {
                 setArticle(defaultArticle(user))
                 notifySucess('Reception validée');
