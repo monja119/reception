@@ -11,9 +11,6 @@ export const getArticles = (data) => {
     })
 }
 
-export const findArticle = (numero) => {
-    return axios.get(`/api/articles/${numero}`);
-}
 
 export const createArticle = (data) => {
     return axios.post(`/api/articles`, data);

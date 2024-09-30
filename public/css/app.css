@@ -20,6 +20,15 @@
     }
 }
 
+@keyframes __zoomIn {
+    from {
+        transform: scale(0);
+    }
+    to {
+        transform: scale(1);
+    }
+}
+
 .background-primary{
     background-color: var(--first-color);
     color: white;
@@ -101,4 +110,24 @@
 .list-dossier li:hover{
     background-color: var(--first-color);
     color: white;
+}
+
+
+.container-images{
+    width : 250px;
+    height : 250px;
+}
+
+/*.container-images:hover {*/
+/*    transform : scale(1.05);*/
+/*}*/
+
+.gallery-item .trash {
+    display :none;
+    margin-top : -35px;
+    z-index : 1000
+}
+
+.gallery-item:hover .trash {
+    display : block;
 }

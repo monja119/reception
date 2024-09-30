@@ -1,10 +1,11 @@
 import React, {useState, useEffect} from 'react';
+import { Link } from "react-router-dom";
 import { useSelector } from 'react-redux';
-import {format_date} from "../../components/helper.jsx";
-import { notifyError, notifySucess } from "../../components/notificationManager.jsx";
-import Pagination from "../../components/Pagination.jsx";
+import {format_date} from "../helper.jsx";
+import { notifyError, notifySucess } from "../notificationManager.jsx";
+import Pagination from "../Pagination.jsx";
 import {deleteArticle, getArticles} from "../../services/dataService.jsx";
-import UpdateUserModal from "../../components/Modals/EditArticleModal.jsx";
+import UpdateUserModal from "../Modals/EditArticleModal.jsx";
 import {useNavigate} from "react-router-dom";
 
 let today = new Date();
@@ -196,11 +197,12 @@ export default function List() {
                                     <td className={"text-center"}> {article.reste}</td>
                                     <td className={"text-center"}> {format_date(article.created_at)}</td>
                                     <td className={"d-flex flex-row justify-content-center gap-2"}>
-                                        {/*<button*/}
-                                        {/*    className={`btn btn-sm ml-1 btn-primary`}*/}
-                                        {/*>*/}
-                                        {/*    <span className="fa fa-eye"></span>*/}
-                                        {/*</button>*/}
+                                        <Link
+                                            to={`/details/${article.id}`}
+                                            className={`btn btn-sm ml-1 btn-primary`}
+                                        >
+                                            <span className="fa fa-eye"></span>
+                                        </Link>
                                         <button
                                             className={`btn btn-sm ml-1 btn-secondary`}
                                             onClick={async () => {

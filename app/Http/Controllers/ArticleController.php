@@ -79,6 +79,8 @@ class ArticleController extends Controller
      */
     public function show(Article $article)
     {
+        $article->load('creator');
+        return response()->json($article);
     }
 
     /**

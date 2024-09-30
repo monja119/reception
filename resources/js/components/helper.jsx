@@ -21,3 +21,19 @@ export const extract_page = (pagination_url) => {
     const url = new URL(pagination_url);
     return parseInt(url.searchParams.get('page'));
 }
+
+
+export const formData = (data) => {
+    const formData = new FormData();
+    for (let key in data) {
+        if (key === "images") {
+            // Ajoutez chaque image séparément
+            data[key].forEach((image, index) => {
+                formData.append(`images[${index}]`, image);
+            });
+        } else {
+            formData.append(key, data[key]);
+        }
+    }
+    return formData;
+}

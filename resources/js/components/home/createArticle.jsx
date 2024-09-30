@@ -1,7 +1,9 @@
 import React, {useState, useEffect, useRef} from 'react';
 import { createArticle, getNumeroDossier } from '../../services/dataService.jsx';
-import { notifyError, notifySucess } from '../../components/notificationManager.jsx';
-
+import { notifyError, notifySucess } from '../notificationManager.jsx';
+import { galleryData } from "../../data/gallery.js";
+import Gallery from "../Gallery.jsx";
+import {formData} from "../helper.jsx";
 
 const defaultArticle = (user) => {
     return {
@@ -20,7 +22,7 @@ export default function CreateArticle ({ user }) {
     const [numeroDossier, setNumeroDossier] = useState([]);
     const [hideList, setHideList] = useState(true);
     const ulRef = useRef(null);
-
+    const [images, setImages] = useState([]);
 
     const handleChange = (name, value, source=null) => {
         if(source && name === 'numero') {
@@ -33,6 +35,19 @@ export default function CreateArticle ({ user }) {
         setArticle({ ...article, [name]: value });
     }
 
+    const handleImage = (e) => {
+        const files = e.target.files;
+        if(files.length > 0) {
+            const newdata = Array.from(files).map((file) => {
+                const imageData = URL.createObjectURL(file)
+                return  {
+                    data : imageData,
+                };
+            });
+
+            setImages([...images, ...newdata]);
+        }
+    }
 
     const initData = () => {
         setArticle(defaultArticle(user));
@@ -65,7 +80,10 @@ export default function CreateArticle ({ user }) {
             numero : numero,
             quantity : article.quantity,
             reste : article.reste === '' ? 0 : article.reste,
-        }
+            images : images.map(image => image.data)
+    }
+
+        const allData = formData(data)
 
         createArticle(data)
             .then((res) => {
@@ -80,6 +98,30 @@ export default function CreateArticle ({ user }) {
                 setLoading(false);
             });
     }
+
+    const addImage = () => {
+        const input = document.getElementById('inputImage');
+        input.click();
+        input.onchange = (e) => {
+            handleImage(e);
+        }
+    }
+
+    const removeImage = (index) => {
+        const newImages = images.filter((image) => image.index !== index);
+        setImages(newImages);
+    }
+
+    useEffect(() => {
+        if(images.length > 0) {
+            // re indexing
+            images.forEach((image, index) => {
+                image.index = index;
+            })
+            setImages(images);
+            console.log(images);
+        }
+    }, [images]);
 
     useEffect(() => {
         article.numero !== '' && getNumeroDossier(article.numero)
@@ -185,6 +227,27 @@ export default function CreateArticle ({ user }) {
                                     <div className="input-group-text h-100">
                                         <span className="fas fa-sort-numeric-down"></span>
                                     </div>
+                                </div>
+                            </div>
+
+                            <div className="d-flex flex-column mb-3">
+                                <button
+                                    onClick={addImage} className={'btn btn-sm primary-button rounded mb-1'}
+                                    style={{width: '200px'}}
+                                >
+                                    Ajouter une image
+                                </button>
+                                <span className="text-muted small">Fichier de type image</span>
+                                <input id="inputImage" type={'file'} hidden accept={'image/*'} multiple={true}/>
+                                <div style={{
+                                    maxHeight: '300px',
+                                    overflowY: 'auto',
+                                }}>
+                                    <Gallery
+                                        dataImages={images}
+                                        hideTrash={false}
+                                        onRemoveImage={removeImage}
+                                    />
                                 </div>
                             </div>
 

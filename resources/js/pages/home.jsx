@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector } from 'react-redux';
-import CreateArticle from "./createArticle.jsx";
+import CreateArticle from "../components/home/createArticle.jsx";
 export default function Home() {
     const userStore = useSelector((state) => state.reception_user.user);
 
