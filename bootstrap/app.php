@@ -15,5 +15,10 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        $exceptions->render(function (Throwable $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+                'code' => $e->getCode() ?: 500,
+            ], $e->getCode() ?: 500);
+        });
     })->create();

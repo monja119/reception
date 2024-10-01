@@ -14,9 +14,6 @@ class ConteneurController extends Controller
     {
         $page = 1;
         $search = '';
-//
-//        initial_date : data.initial_date,
-//            final_date : data.final_date
         $initial_date = '';
         $final_date = '';
 
@@ -35,7 +32,7 @@ class ConteneurController extends Controller
             $final_date = request()->get('final_date');
         }
 
-        $articles = Conteneur::
+        $conteneurs = Conteneur::
         when($search, function($query) use ($search) {
             return $query->where('numero', 'like', '%'.$search.'%');
         })
@@ -48,7 +45,7 @@ class ConteneurController extends Controller
             ->orderBy('id', 'desc')
             ->paginate($per_page, ['*'], 'page', $page);
 
-        return response()->json($articles);
+        return response()->json($conteneurs);
     }
 
     /**
@@ -63,12 +60,13 @@ class ConteneurController extends Controller
             'creator_id' => 'required'
         ]);
 
-        $article = Conteneur::create($validated_data);
+
+        $conteneur = Conteneur::create($validated_data);
 
         return response()->json(
             [
-                'message' => 'Article créé',
-                'article' => $article
+                'message' => 'Conteneur créé',
+                'article' => $conteneur
             ]
             ,201
         );
@@ -77,14 +75,16 @@ class ConteneurController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Conteneur $article)
+    public function show(Conteneur $conteneur)
     {
+        $conteneur->load('creator');
+        return response()->json($conteneur);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Conteneur $article)
+    public function update(Request $request, Conteneur $conteneur)
     {
         $validated_data = $request->validate([
             'numero' => 'required',
@@ -92,12 +92,12 @@ class ConteneurController extends Controller
             'reste' => 'required'
         ]);
 
-        $article->update($validated_data);
+        $conteneur->update($validated_data);
 
         return response()->json(
             [
-                'message' => 'Article modifié',
-                'article' => $article
+                'message' => 'Conteneur modifié',
+                'article' => $conteneur
             ]
             ,200
         );
@@ -107,13 +107,13 @@ class ConteneurController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Conteneur $article)
+    public function destroy(Conteneur $conteneur)
     {
-        $article->delete();
+        $conteneur->delete();
 
         return response()->json(
             [
-                'message' => 'Article supprimé'
+                'message' => 'Conteneur supprimé'
             ]
             ,200
         );

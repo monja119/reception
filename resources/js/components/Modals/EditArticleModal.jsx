@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
 import { Button, Modal } from 'react-bootstrap';
-import { updateArticle, getNumeroDossier } from "../../services/dataService.jsx";
+import { updateConteneur, getNumeroDossier } from "../../services/dataService.jsx";
 import { notifyError, notifySucess} from "../notificationManager.jsx";
 
 const defaultArticle = (article) => {
@@ -70,7 +70,7 @@ export default function UpdateUserModal ({ index, article, articles, setArticles
             reste: data.reste === '' ? 0 : data.reste,
         }
 
-        updateArticle(articleData)
+        updateConteneur(articleData)
             .then((res) => {
                 // update articles
                 let newArticles = [...articles];

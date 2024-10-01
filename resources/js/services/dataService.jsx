@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-export const getArticles = (data) => {
-    return axios.get(`/api/articles/`, {
+export const getConteneurs = (data) => {
+    return axios.get(`/api/conteneurs/`, {
         params: {
             page: data.page,
             search : data.search,
@@ -12,24 +12,41 @@ export const getArticles = (data) => {
 }
 
 
-export const createArticle = (data) => {
-    return axios.post(`/api/articles`, data);
+export const createConteneur = (data) => {
+    return axios.post(`/api/conteneurs`, data);
 }
 
-export const updateArticle = (data) => {
-    return axios.put(`/api/articles/${data.id}`, data);
+export const updateConteneur = (data) => {
+    return axios.put(`/api/conteneurs/${data.id}`, data);
 }
 
-export const deleteArticle = (id) => {
-    return axios.delete(`/api/articles/${id}`);
+export const deleteConteneur = (id) => {
+    return axios.delete(`/api/conteneurs/${id}`);
 }
 
-export const getArticle = (id) => {
-    return axios.get(`/api/articles/${id}`);
+export const        getConteneur = (id) => {
+    return axios.get(`/api/conteneurs/${id}`);
 }
 
 
 export const getNumeroDossier  = (like) => {
     return axios.get(`/api/x3/${like}`);
+}
+
+
+export const sendImage = (data) => {
+    return axios.post(`/api/images`, data);
+}
+
+export const deleteImage = (id) => {
+    return axios.delete(`/api/images/${id}`);
+}
+
+export const getImages = (id) => {
+    return axios.get(`/api/images/${id}`);
+}
+
+export const getConteneurImages = (id) => {
+    return axios.get(`/api/conteneur/${id}/images`);
 }
 

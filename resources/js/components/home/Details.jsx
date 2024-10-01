@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
 import { useParams } from "react-router-dom"
-import { getArticle } from "../../services/dataService.jsx";
+import { getConteneur, getConteneurImages } from "../../services/dataService.jsx";
 import Lotties from "../lotties.jsx";
 import no_result from "../../assets/lotties/no_result.json";
 import {format_date} from "../helper.jsx";
@@ -10,17 +10,34 @@ import {galleryData} from "../../data/gallery.js";
 import Gallery from "../Gallery.jsx";
 
 export default function Details () {
-    const [article, setArticle] = useState(null);
+    const [conteneur, setConteneur] = useState(null);
+    const [images, setImages] = useState([]);
     const [loading, setLoading] = useState(true);
     const { id: idParam } = useParams();
-    const galleryID = 3
-
+    const [galleryLoaded, setGalleryLoaded] = useState(false);
 
     useEffect(() => {
         try {
-            idParam && getArticle(idParam)
+            idParam && getConteneur(idParam)
                 .then((response) => {
-                    setArticle(response.data)
+                    setConteneur(response.data)
+
+                    // getting images
+                    getConteneurImages(idParam)
+                        .then((response) => {
+                            console.log(response.data.images)
+                            const result = response.data.images.map((image, index) => {
+                                return {
+                                    data: '/'+image.path,
+                                    id: index
+                                }
+                            });
+                            setImages(result);
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        })
+                        .finally(() => setGalleryLoaded(true));
                 })
                 .finally(() => setLoading(false));
         } catch (error) {
@@ -30,33 +47,33 @@ export default function Details () {
     }, []);
 
     useEffect(() => {
-        console.log(article);
-    }, [article]);
+        console.log(conteneur);
+    }, [conteneur]);
 
     return (
         <>
 
             {
-                 article ? (
+                 conteneur ? (
                      <div className={'mt-5 p-2'}>
                         {/* details*/}
                         <div className={"row"}>
                             <div className={"col-12"}>
-                                <span className={"opacity-75"}>N° de dossier : </span> <span className={"fw-bold"}>{article.numero}</span>
+                                <span className={"opacity-75"}>N° de dossier : </span> <span className={"fw-bold"}>{conteneur.numero}</span>
                             </div>
                             <div className={"col-12"}>
-                                <span className={"opacity-75"}>Quantité : </span> <span className={"fw-bold"}>{article.quantity}</span>
+                                <span className={"opacity-75"}>Quantité : </span> <span className={"fw-bold"}>{conteneur.quantity}</span>
                             </div>
                             <div className={"col-12"}>
-                                <span className={"opacity-75"}>Reste : </span> <span className={"fw-bold"}>{article.reste}</span>
+                                <span className={"opacity-75"}>Reste : </span> <span className={"fw-bold"}>{conteneur.reste}</span>
                             </div>
                             <div className={"col-12"}>
-                                <span className={"opacity-75"}>Reçu le  : </span> <span className={"fw-bold"}> { format_date(article.created_at)} </span>
+                                <span className={"opacity-75"}>Reçu le  : </span> <span className={"fw-bold"}> { format_date(conteneur.created_at)} </span>
                             </div>
                             <div className={"col-12"}>
                                 <span className={"opacity-75"}>Par </span>
                                 <span className={"fw-bold"}>
-                                    { `${article.creator.name} ` }
+                                    { `${conteneur.creator.name} ` }
                                 </span>
                             </div>
                             <div className={"col-12"}>
@@ -73,7 +90,7 @@ export default function Details () {
                                 backgroundColor : '#f8f9fa'
                             }}
                          >
-                            <Gallery dataImages={galleryData} galleryID={galleryID} />
+                             { galleryLoaded && <Gallery dataImages={images} noTrash={true}/> }
                          </div>
                     </div>
                 )

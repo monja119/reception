@@ -1,9 +1,8 @@
 import React, {useState, useEffect, useRef} from 'react';
-import { createArticle, getNumeroDossier } from '../../services/dataService.jsx';
+import {createConteneur, getNumeroDossier, sendImage, deleteConteneur} from '../../services/dataService.jsx';
 import { notifyError, notifySucess } from '../notificationManager.jsx';
-import { galleryData } from "../../data/gallery.js";
 import Gallery from "../Gallery.jsx";
-import {formData} from "../helper.jsx";
+import {formBlob, formData} from "../helper.jsx";
 
 const defaultArticle = (user) => {
     return {
@@ -38,14 +37,22 @@ export default function CreateArticle ({ user }) {
     const handleImage = (e) => {
         const files = e.target.files;
         if(files.length > 0) {
-            const newdata = Array.from(files).map((file) => {
-                const imageData = URL.createObjectURL(file)
-                return  {
-                    data : imageData,
-                };
+            let new_data = [];
+             Array.from(files).map((file) => {
+                // if not image
+                if(!file.type.includes('image')) {
+                    notifyError('Fichier non valide');
+                }
+                else {
+                    // if image
+                    const imageData = URL.createObjectURL(file)
+                    new_data.push({
+                        data : imageData,
+                    });
+                }
             });
 
-            setImages([...images, ...newdata]);
+            setImages([...images, ...new_data]);
         }
     }
 
@@ -74,21 +81,51 @@ export default function CreateArticle ({ user }) {
             return;
         }
 
-
-        const data = {
+        let data = {
             creator_id : article.creator_id,
             numero : numero,
             quantity : article.quantity,
             reste : article.reste === '' ? 0 : article.reste,
-            images : images.map(image => image.data)
-    }
+        }
 
-        const allData = formData(data)
+        data = formData(data)
+        createConteneur(data)
+            .then(async (res) => {
+                //sending images
+                let conteneur = 0
+                await images.forEach((image, i) => {
+                    // getting blob
+                    formBlob(image.data)
+                        .then((image) => {
+                            const data = {
+                                creator_id : user.id,
+                                conteneur_id : res.data.article.id,
+                                conteneur_numero : numero,
+                                data : image,
+                                index : i,
+                                extension : image.type.split('/')[1]
+                            }
+                            sendImage(formData(data))
+                                .then((res) => {
+                                    console.log(res);
+                                    conteneur++;
+                                    if(conteneur === images.length) {
+                                        setArticle(defaultArticle(user))
+                                        setImages([]);
+                                        notifySucess('Reception validée');
+                                    }
+                                })
+                                .catch((error) => {
+                                    console.error(error);
+                                    // delete conteneur
+                                    deleteConteneur(res.data.article.id)
+                                        .then((res) => {
+                                            notifyError("Conteneur annulé");
+                                        })
 
-        createArticle(data)
-            .then((res) => {
-                setArticle(defaultArticle(user))
-                notifySucess('Reception validée');
+                                })
+                        })
+                })
             })
             .catch((error) => {
                 console.error(error);
@@ -113,10 +150,10 @@ export default function CreateArticle ({ user }) {
     }
 
     useEffect(() => {
-        if(images.length > 0) {
+        if(images && images.length > 0) {
             // re indexing
             images.forEach((image, index) => {
-                image.index = index;
+                image.index = index || 0;
             })
             setImages(images);
             console.log(images);
@@ -243,11 +280,13 @@ export default function CreateArticle ({ user }) {
                                     maxHeight: '300px',
                                     overflowY: 'auto',
                                 }}>
-                                    <Gallery
-                                        dataImages={images}
-                                        hideTrash={false}
-                                        onRemoveImage={removeImage}
-                                    />
+                                    {  images.length > 0 &&
+                                        <Gallery
+                                            dataImages={images}
+                                            hideTrash={false}
+                                            onRemoveImage={removeImage}
+                                        />
+                                    }
                                 </div>
                             </div>
 

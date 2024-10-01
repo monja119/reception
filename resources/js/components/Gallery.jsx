@@ -8,6 +8,7 @@ const defaultSize = {
 }
 export default function Gallery({
     dataImages,
+    noTrash=false,
     hideTrash=true,
     onRemoveImage = (index) => {}
 }) {
@@ -27,7 +28,7 @@ export default function Gallery({
     }, []);
 
     return (
-        <div className="pswp-gallery gap-1 d-flex flex-row flex-wrap align-content-center justify-content-center" id={'gallery'}>
+        <div className="pswp-gallery gap-1 d-flex flex-row flex-wrap align-content-center " id={'gallery'}>
             {dataImages.map((image, index) => {
                 // get images size
                 let img = new Image();
@@ -60,12 +61,13 @@ export default function Gallery({
 
 
                         {/* delete button */}
-                        <button
+                        { !noTrash && <button
                             className={`btn btn-danger btn-sm trash ${!hideTrash && 'd-block'}`}
                             onClick={() => onRemoveImage(index)}
                         >
                             <span className={'fa fa-trash'}></span>
                         </button>
+                        }
                     </div>
                 )}
             )}

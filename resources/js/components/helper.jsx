@@ -1,4 +1,3 @@
-import React from 'react';
 let gmt = 3
 
 //
@@ -27,13 +26,19 @@ export const formData = (data) => {
     const formData = new FormData();
     for (let key in data) {
         if (key === "images") {
-            // Ajoutez chaque image séparément
-            data[key].forEach((image, index) => {
-                formData.append(`images[${index}]`, image);
-            });
+            const blobResponse = fetch(data[key]);
+            const blob = blobResponse.blob();
+            formData.append(key, blob);
+
         } else {
             formData.append(key, data[key]);
         }
     }
     return formData;
+}
+
+
+export  const formBlob = async (url) => {
+     const blobResponse = await fetch(url);
+    return await blobResponse.blob();
 }

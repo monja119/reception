@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import {format_date} from "../helper.jsx";
 import { notifyError, notifySucess } from "../notificationManager.jsx";
 import Pagination from "../Pagination.jsx";
-import {deleteArticle, getArticles} from "../../services/dataService.jsx";
+import {deleteConteneur, getConteneurs} from "../../services/dataService.jsx";
 import UpdateUserModal from "../Modals/EditArticleModal.jsx";
 import {useNavigate} from "react-router-dom";
 
@@ -63,7 +63,7 @@ export default function List() {
             initial_date : initial_date,
             final_date : final_date
         }
-        getArticles(data)
+        getConteneurs(data)
             .then(async (res) => {
                 await setPaginationData(res.data);
                 await setArticles(res.data.data);
@@ -88,7 +88,7 @@ export default function List() {
 
     const deleting = (index, id) => {
         setLoading(true)
-        confirm('Voulez-vous vraiment supprimer cet article ?') && deleteArticle(id)
+        confirm('Voulez-vous vraiment supprimer cet article ?') && deleteConteneur(id)
             .then(() => {
                 notifySucess('Article supprimé')
                 let newUsers = [...articles];

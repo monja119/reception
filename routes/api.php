@@ -1,10 +1,11 @@
 <?php
 
+use App\Http\Controllers\ImageController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\ConteneurController;
 use App\Http\Controllers\X3Controller;
 
 Route::group(['prefix' => 'auth'], function () {
@@ -28,11 +29,21 @@ Route::group(['prefix' => 'users'], function () {
 });
 
 // articles
-Route::apiResource('articles', ArticleController::class);
+Route::apiResource('conteneurs', ConteneurController::class);
+Route::group(['prefix' => 'conteneur'], function () {
+    Route::get('/{id}/images', [ImageController::class, 'showImageByConteneur'])->name('showImageByConteneur');
+});
+
+// images
+Route::apiResource('images', ImageController::class);
 
 // route test
 Route::get('/test', function () {
     return response()->json(['message' => 'Reussi!']);
+});
+
+Route::get('/', function () {
+    return response()->json(['message' => 'welcome!']);
 });
 
 // x3
