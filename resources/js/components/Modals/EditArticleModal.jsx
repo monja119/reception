@@ -3,25 +3,11 @@ import { Button, Modal } from 'react-bootstrap';
 import { updateConteneur, getNumeroDossier } from "../../services/dataService.jsx";
 import { notifyError, notifySucess} from "../notificationManager.jsx";
 
-const defaultArticle = (article) => {
-    return {
-        id : article?.id,
-        numero : article?.numero,
-        quantity : article?.quantity,
-        reste : article?.reste,
-    }
-}
 
-const defaultData = {
-    id: '',
-    numero: '',
-    quantity: '',
-    reste: '',
-}
-
-export default function UpdateUserModal ({ index, article, articles, setArticles, show, handleClose }) {
-    const [data, setData] = useState(defaultData);
-    const init_numero = article?.numero;
+export default function UpdateUserModal ({ conteneur, setConteneur, show, handleClose }) {
+    const defaultData = conteneur;
+    const [data, setData] = useState(conteneur);
+    const init_numero = conteneur?.numero;
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [numero, setNumero] = useState(init_numero);
@@ -38,14 +24,15 @@ export default function UpdateUserModal ({ index, article, articles, setArticles
             value === init_numero ? setNumero(init_numero) : setNumero('')
         }
         setData({ ...data, [name]: value });
+        setConteneur({ ...data, [name]: value });
     }
 
 
     useEffect(() => {
-        article && setData(article);
-    }, [article]);
+        conteneur && setData(conteneur);
+    }, [conteneur]);
 
-    const saveArticle = () => {
+    const saveConteneur = () => {
         setError('');
         setLoading(true);
 
@@ -63,20 +50,16 @@ export default function UpdateUserModal ({ index, article, articles, setArticles
             return;
         }
 
-        const articleData = {
+        const conteneurData = {
             id: data.id,
             numero: numero,
             quantity: data.quantity,
             reste: data.reste === '' ? 0 : data.reste,
         }
 
-        updateConteneur(articleData)
+        updateConteneur(conteneurData)
             .then((res) => {
-                // update articles
-                let newArticles = [...articles];
-                newArticles[index] = res.data.article;
-                setArticles(newArticles);
-                notifySucess('Article modifié');
+                notifySucess('Conteneur modifié');
                 handleClose();
             })
             .catch((error) => {
@@ -180,7 +163,7 @@ export default function UpdateUserModal ({ index, article, articles, setArticles
                         className={'btn btn-danger'}>
                         Annuler
                     </Button>
-                    <Button onClick={saveArticle} className={'btn btn-success'}>
+                    <Button onClick={saveConteneur} className={'btn btn-success'}>
                         Mettre à jour
                     </Button>
                 </Modal.Footer>

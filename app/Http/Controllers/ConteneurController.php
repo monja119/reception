@@ -2,14 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use AllowDynamicProperties;
 use App\Models\Conteneur;
+use App\Models\Email;
 use Illuminate\Http\Request;
+use App\Http\Controllers\EmailController;
 
+#[AllowDynamicProperties]
 class ConteneurController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
+    public function __construct()
+    {
+        $this->emailer = new EmailController();
+    }
+
     public function index()
     {
         $page = 1;
@@ -57,11 +64,28 @@ class ConteneurController extends Controller
             'numero' => 'required',
             'quantity' => 'required',
             'reste' => 'required',
-            'creator_id' => 'required'
+            'creator_id' => 'required|int'
         ]);
-
-
         $conteneur = Conteneur::create($validated_data);
+
+
+        // email
+        $emailsList = Email::all();
+        $recipients = [];
+        foreach ($emailsList as $email) {
+            $recipients[] = $email->email;
+        }
+        $conteneur->load('creator');
+        $emailData = [
+            'numero' => $conteneur->numero,
+            'quantity' => $conteneur->quantity,
+            'reste' => $conteneur->reste,
+            'created_at' => $conteneur->created_at,
+            'creator' => $conteneur->creator->name,
+            'creator_email' => $conteneur->creator->email,
+            'url' => env('APP_URL').'/details/'.$conteneur->id
+        ];
+        $this->emailer->sendEmail($emailData, $recipients);
 
         return response()->json(
             [

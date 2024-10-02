@@ -2,7 +2,7 @@ import React, {useState, useEffect, useRef} from 'react';
 import {createConteneur, getNumeroDossier, sendImage, deleteConteneur} from '../../services/dataService.jsx';
 import { notifyError, notifySucess } from '../notificationManager.jsx';
 import Gallery from "../Gallery.jsx";
-import {formBlob, formData} from "../helper.jsx";
+import {formatFileName, formBlob, formData} from "../helper.jsx";
 
 const defaultArticle = (user) => {
     return {
@@ -100,14 +100,13 @@ export default function CreateArticle ({ user }) {
                             const data = {
                                 creator_id : user.id,
                                 conteneur_id : res.data.article.id,
-                                conteneur_numero : numero,
+                                conteneur_numero : formatFileName(numero),
                                 data : image,
                                 index : i,
                                 extension : image.type.split('/')[1]
                             }
                             sendImage(formData(data))
                                 .then((res) => {
-                                    console.log(res);
                                     conteneur++;
                                     if(conteneur === images.length) {
                                         setArticle(defaultArticle(user))
@@ -156,7 +155,6 @@ export default function CreateArticle ({ user }) {
                 image.index = index || 0;
             })
             setImages(images);
-            console.log(images);
         }
     }, [images]);
 

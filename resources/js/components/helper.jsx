@@ -42,3 +42,7 @@ export  const formBlob = async (url) => {
      const blobResponse = await fetch(url);
     return await blobResponse.blob();
 }
+
+export const formatFileName = (name) => {
+    return name.replace(/\s/g, '_').replace(/\//g, '_');
+}

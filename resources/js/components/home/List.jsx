@@ -4,8 +4,7 @@ import { useSelector } from 'react-redux';
 import {format_date} from "../helper.jsx";
 import { notifyError, notifySucess } from "../notificationManager.jsx";
 import Pagination from "../Pagination.jsx";
-import {deleteConteneur, getConteneurs} from "../../services/dataService.jsx";
-import UpdateUserModal from "../Modals/EditArticleModal.jsx";
+import {getConteneurs} from "../../services/dataService.jsx";
 import {useNavigate} from "react-router-dom";
 
 let today = new Date();
@@ -78,33 +77,6 @@ export default function List() {
     }, [page, search, initial_date, final_date]);
 
 
-
-    const [showEdit, setShowEdit] = useState(false);
-    const [indexEdit, setIndexEdit] = useState(0)
-    const handleOpenEdit = () => setShowEdit(true)
-    const handleCloseEdit = () => setShowEdit(false)
-
-    const handleArticle = (articles) => { setArticles(articles) }
-
-    const deleting = (index, id) => {
-        setLoading(true)
-        confirm('Voulez-vous vraiment supprimer cet article ?') && deleteConteneur(id)
-            .then(() => {
-                notifySucess('Article supprimé')
-                let newUsers = [...articles];
-                newUsers.splice(index, 1);
-                setArticles(newUsers);
-            })
-            .catch((error) => {
-                console.error(error);
-                notifyError("Erreur lors de la suppression : " + error.message)
-            })
-            .finally(() => {
-                setLoading(false);
-            });
-    }
-
-
     // make init date today
     useEffect(() => {
         let today = new Date();
@@ -123,16 +95,6 @@ export default function List() {
     }, []);
     return (
         <>
-            {articles.length > 0 &&
-                <UpdateUserModal
-                    show={showEdit}
-                    handleClose={handleCloseEdit}
-                    index={indexEdit}
-                    article={articles[indexEdit]}
-                    articles={articles}
-                    setArticles={handleArticle}
-                />
-            }
             <div
                 className="search-bar d-flex flex-row align-items-center justify-content-end py-2 gap-1 flex-sm-basis-100 flex-md-basis-100"
             >
@@ -203,22 +165,6 @@ export default function List() {
                                         >
                                             <span className="fa fa-eye"></span>
                                         </Link>
-                                        <button
-                                            className={`btn btn-sm ml-1 btn-secondary`}
-                                            onClick={async () => {
-                                                await setIndexEdit(index)
-                                                handleOpenEdit()
-                                            }}
-                                        >
-                                            <span className="fa fa-edit"></span>
-                                        </button>
-                                        <button
-                                            className={`btn btn-sm btn-danger ml-1`}
-                                            onClick={() => deleting(index, article.id)}
-                                            disabled={loading}
-                                        >
-                                            <span className="fa fa-trash"></span>
-                                        </button>
                                     </td>
                                 </tr>
                             )
